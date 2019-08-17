@@ -1,0 +1,131 @@
+---
+title: "Using R package GenomicOZone to achieve outstanding genomic zones"
+author: "Hua Zhong and Joe Song"
+date: "Updated August 9, 2019; Created August 9, 2019"
+output: rmarkdown::html_vignette
+bibliography: vignettes.bib
+vignette: >
+  %\VignetteIndexEntry{GenomicOZone}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+We illustrate the GenomicOZone pipeline with an example. The \textit{Escherichia coli} transcriptome data set [@gault2016data] contains transcriptome profiles of \textit{E. coli} K-12 under nickel stress, with 3 samples under exposure to nickel and 3 normal samples. 
+
+Four packages are required to run the pipeline with the data set and generate visualizations.
+```{r setup, message=F, warning=F, results = "hide"}
+require(GenomicOZone)
+require(GEOquery)
+require(readxl)
+```
+
+The \textit{Escherichia coli} transcriptome data set is downloaded from GEO database [@edgar2002gene] using R package \texttt{GEOquery} [@davis2007geoquery]. The series number of the data set is GSE76167. The input parameters are extracted from the data set. The gene annotation is specified being a GRanges [@lawrence2013software] object. 
+```{r, message=F, warning=F, results = "hide"}
+# Obtain data matrix from GSE76167 supplementary file
+invisible(getGEOSuppFiles("GSE76167"))
+data <- read_excel("./GSE76167/GSE76167_GeneFPKM_AllSamples.xlsx")
+
+
+# Adjust the input data
+data.info <- data[,1:5]
+data <- data[,-c(1:5)]
+data <- data[,substr(colnames(data), 1, 4) == "FPKM"]
+data <- data.matrix(data[,c(1,5,6,3,4,2)])
+colnames(data) <- c(paste(rep("WT",3), "_", c(1,2,3), sep=""), paste(rep("Ni",3), "_", c(1,2,3), sep=""))
+rownames(data) <- data.info$tracking_id
+
+
+# Obtain genes
+data.genes <- data.info$gene_short_name
+data.genes[data.genes == "-"] <- data.info$tracking_id[data.genes == "-"]
+
+
+# Create colData
+colData <- data.frame(Sample_name = colnames(data),
+                      Condition = factor(rep(c("WT", "Ni"), each = 3), 
+                                         levels = c("WT", "Ni")))
+
+
+# Create design
+design <- ~ Condition
+
+
+# Create rowData.GRanges
+pattern <- "(.[^\\:]*)\\:([0-9]+)\\-([0-9]+)"
+matched <- regexec(pattern, as.character(data.info$locus))
+values <- regmatches(as.character(data.info$locus), matched)
+data.gene.coor <-  data.frame(chr = as.character(sapply(values, function(x){x[[2]]})),
+                              start = as.numeric(sapply(values, function(x){x[[3]]})),
+                              end = as.numeric(sapply(values, function(x){x[[4]]})))
+rownames(data.gene.coor) <- as.character(data.info$tracking_id)
+rowData.GRanges <- GRanges(seqnames = data.gene.coor$chr,
+                           IRanges(start = data.gene.coor$start, end = data.gene.coor$end),
+                           Gene.name = data.genes)
+names(rowData.GRanges) <- data.info$tracking_id
+
+chr.size <- 4646332
+names(chr.size) <- "NC_007779"
+seqlevels(rowData.GRanges) <- names(chr.size)
+seqlengths(rowData.GRanges) <- chr.size
+```
+
+
+With the formatted data and parameters, we run the pipeline as below:
+```{r}
+# Collect all the inputs together and check completenes 
+GOZ.ds <- GOZDataSet(data = data,
+                     colData = colData,
+                     design = design,
+                     rowData.GRanges = rowData.GRanges)
+
+
+# Run the pipeline
+GOZ.ds <- GenomicOZone(GOZ.ds)
+```
+
+The three functions are respectively for extracting the GRanges object for all genes, all zones and outstanding genomic zones only.
+```{r}
+# Extract gene/zone GRanges object
+Gene.GRanges <- extract_genes(GOZ.ds)
+head(Gene.GRanges)
+
+Zone.GRanges <- extract_zones(GOZ.ds)
+head(Zone.GRanges)
+
+OZone.GRanges <- extract_outstanding_zones(GOZ.ds)
+head(OZone.GRanges)
+
+Zone.exp.mat <- extract_zone_expression(GOZ.ds)
+head(Zone.exp.mat)
+```
+
+Three kinds of plots can be generated from the processed GenomicOZong dataset list, including genome-wide overview, chromosome-wide heatmap and zone-wide visualization. The plots are generated using R package \texttt{ggplot2} [@Wickham2016ggplot2].
+```{r, out.width = "100%", out.height = "100%", fig.align="center"}
+# Generate visualizations
+plot_genome(GOZ.ds, plot.file = "E_coli_genome.pdf",
+            plot.width = 15, plot.height = 4)
+knitr::include_graphics("E_coli_genome.pdf")
+```
+
+
+```{r, out.width = "100%", out.height = "100%",, fig.align="center"}
+plot_chromosomes(GOZ.ds, plot.file = "E_coli_chromosome.pdf",
+                 plot.width = 20, plot.height = 4)
+knitr::include_graphics("E_coli_chromosome.pdf")
+```
+
+```{r, out.width = "50%", out.height = "380dpi", fig.align="center"}
+plot_zones(GOZ.ds, plot.file = "E_coli_zone.pdf", plot.all.zones = FALSE)
+knitr::include_graphics("E_coli_zone.pdf")
+```
+
+
+## References
+
