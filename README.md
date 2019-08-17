@@ -1,2 +1,2 @@
 # GenomicOZone
-An R package to perform genomic zoning and differential analysis on transcriptome data
+An R package to perform genomic zoning, differential zone analysis and visualizations on transcriptome data. A vignette document is provided showing how to use the package easily.
