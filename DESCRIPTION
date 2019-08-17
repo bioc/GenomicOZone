@@ -1,16 +1,17 @@
 Package: GenomicOZone
 Type: Package
 Title: An R package to detect outstanding genomic zones of consistently differential gene activity
-Version: 0.1.1
+biocViews: Software, GeneExpression, Transcription, DifferentialExpression, FunctionalPrediction, GeneRegulation, BiomedicalInformatics, CellBiology, FunctionalGenomics, Genetics, SystemsBiology, Transcriptomics, Clustering, Regression, RNASeq, Annotation, Visualization, Sequencing, Coverage, DifferentialMethylation, GenomicVariation, StructuralVariation
+Version: 0.99.0
 Author: Hua Zhong, Mingzhou Song
-Maintainer: Mingzhou Song <joemsong@cs.nmsu.edu>
+Maintainer: Hua Zhong<zh9118@gmail.com>, Mingzhou Song <joemsong@cs.nmsu.edu>
 Description: Chromosomal reorganization, such as structural variation, aneuploidy and DNA methylation have impacts on the involved genes. However, they can’t be easily reveal by modeling gene expression only.The idea to cluster gene locations into genomic zones based on both gene proximity and abundance may focus more on similarities among gene expression patterns. The outstanding genomic zones obtained from zone-based differential expression analysis among multiple sample groups may suggest potential chromosomal reorganization causing phenotype variation. We have developed an R package GenomicOZone to cluster chromosomal activities into zones, analyze differential expressed zones, and visualize maps of outstanding genomic zones. The clustering method guarantees chromosomal global optimality, linear runtime to sample size, and reproducible results. The package enables new characterization of transcriptomic effects due to genome reorganization and other genomic alterations. 
-License: 
+License: LGPL (>=3)
 Encoding: UTF-8
 NeedsCompilation: no
-Depends: R (>= 2.10.0), Ckmeans.1d.dp, GenomicRanges, biomaRt, ggplot2
+Depends: R (>= 3.6), Ckmeans.1d.dp, GenomicRanges, biomaRt, ggplot2
 Suggests: readxl, GEOquery, knitr, rmarkdown
-Imports: plyr, gridExtra, sjstats, parallel, ggbio, S4Vectors, IRanges, GenomeInfoDb, Rdpack
+Imports: grDevices, stats, utils, plyr, gridExtra, sjstats, parallel, ggbio, S4Vectors, IRanges, GenomeInfoDb, Rdpack
 RdMacros: Rdpack
 LazyData: true
 VignetteBuilder: knitr

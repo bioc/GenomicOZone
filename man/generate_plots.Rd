@@ -1,5 +1,5 @@
-\name{Generate plot}
-\alias{Generate plot}
+\name{generate_plots}
+\alias{generate_plots}
 \alias{plot_genome}
 \alias{plot_chromosomes}
 \alias{plot_zones}
@@ -65,6 +65,45 @@ plot_zones(GOZ.ds, plot.file,
   The function \code{plot_chromosomes} plots the chromosome-wide heatmap of normalized and linearized abundance between sorted zones and samples, visualizing the zone differential expression with significant ones marked.
 
   The function \code{plot_zones} plots the line chart and box-plot of the expression of the genes within each significant zone, visualizing gene expression changes over sample conditions.
+}
+\value{
+  The function takes an input of a list, which has been created by \code{\link{GOZDataSet}} and and processed by \code{\link{GenomicOZone}}. The functions accesse the list and generate visualizations. See \code{\link{GOZDataSet}} for how to create the input list. See \code{\link{GenomicOZone}} for how to process the input list and perform the analysis.
+}
+\examples{
+  # Create an example of GOZ.ds
+  data <- matrix(c(1,5,2,6,5,1,6,2), ncol = 2, byrow = TRUE)
+  rownames(data) <- paste("Gene", 1:4, sep='')
+  colnames(data) <- paste("Sample", c(1:2), sep='')
+
+  colData <- data.frame(Sample_name = paste("Sample", c(1:2), sep=''),
+                        Condition = c("Cancer", "Normal"))
+
+  design <- ~ Condition
+
+  rowData.GRanges <- GRanges(seqnames = Rle(rep("chr1", 4)),
+                             ranges = IRanges(start = c(1,2,3,4), end = c(5,6,7,8)))
+  names(rowData.GRanges) <- paste("Gene", 1:4, sep='')
+
+  ks <- c(2)
+  names(ks) <- "chr1"
+
+  GOZ.ds <- GOZDataSet(data, colData, design,
+                       rowData.GRanges,
+                       ks = ks)
+  ####
+
+  # Run the zoing process
+  GOZ.ds <- GenomicOZone(GOZ.ds)
+  ####
+
+  # Generate plots
+  plot_genome(GOZ.ds, plot.file = "Test_genome.pdf",
+            plot.width = 15, plot.height = 4)
+
+  plot_chromosomes(GOZ.ds, plot.file = "Test_chromosome.pdf",
+                 plot.width = 20, plot.height = 4)
+
+  plot_zones(GOZ.ds, plot.file = "Test_zone.pdf", plot.all.zones = FALSE)
 }
 \references{
   \insertAllCited{}

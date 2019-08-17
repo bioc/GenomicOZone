@@ -60,6 +60,9 @@
 
     The argument \code{ks} specifies the number of zones to divide the chromosomes into. The function \code{GenomicOZone} will perform the weighted univariate clustering method Ckmeans \insertCite{wang2011ckmeans}{GenomicOZone} with the \code{ks}. If \code{ks} is \code{NULL}, optimal k values will be determined by dynamic programming.
 }
+\value{
+  The function generates a list with all imputs stored inside. Further process will keep adding revealed information and final results in the list. The results can be accessed by calling the functions in \code{\link{extract_outputs}}. The figures can be visualized by calling the functions in \code{\link{generate_plots}}. See \code{\link{extract_outputs}} and \code{\link{generate_plots}} for how to access the results and generate visualizations.
+}
 \examples{
   data <- matrix(c(1,5,2,6,5,1,6,2), ncol = 2, byrow = TRUE)
   rownames(data) <- paste("Gene", 1:4, sep='')

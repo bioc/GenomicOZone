@@ -34,7 +34,7 @@ get_legend<-function(p){
 #' @importFrom gridExtra grid.arrange
 #' @importFrom utils setTxtProgressBar tail txtProgressBar
 MD.Zone.Gene.path.plots <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, effect.size.rate = 0.05, log.exp = TRUE,
-                                    plot.all.zones = FALSE, cancer.genes = NULL){
+                                    plot.all.zones = FALSE){ #cancer.genes = NULL
   colData <- GOZ.ds$input.data$colData
   Zone.GRanges <- GOZ.ds$runtime.var$zone.GRanges
   Gene.GRanges <- GOZ.ds$runtime.var$data.GRanges
@@ -73,12 +73,20 @@ MD.Zone.Gene.path.plots <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, ef
     stop("Gene pattern not ploted, because less than 2 differential conditions specified in colData!")
   }
 
-  effect.size.specific.threshold <- sort(effect.size.specific, na.last = TRUE, decreasing = TRUE)[floor(length(effect.size.specific) * effect.size.rate)]
+  effect.size.specific.threshold <- floor(length(effect.size.specific) * effect.size.rate)
+  if(effect.size.specific.threshold < 1){
+    effect.size.specific.threshold <- 1
+  }
+  if(effect.size.specific.threshold > length(effect.size.specific)){
+    effect.size.specific.threshold <- length(effect.size.specific)
+  }
+
+  effect.size.specific.threshold <- sort(effect.size.specific, na.last = TRUE, decreasing = TRUE)[effect.size.specific.threshold]
 
   zones.all <- names(Zone.GRanges)[order(effect.size.specific, na.last = TRUE, decreasing = TRUE)]
   zone.signif <- !is.na(p.val.specific) & !is.na(effect.size.specific) &
-                  p.val.specific <= p.value.cutoff &
-                  effect.size.specific >= effect.size.specific.threshold
+    p.val.specific <= p.value.cutoff &
+    effect.size.specific >= effect.size.specific.threshold
   zone.signif <- zone.signif[zones.all]
   zone.color <- sapply(zone.signif, function(x){
     if(x){
@@ -111,9 +119,9 @@ MD.Zone.Gene.path.plots <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, ef
 
     plots.all.sub <- vector("list", 3)
 
-    if(!is.null(cancer.genes)){
-      rownames(data.mat.sub)[rownames(data.mat.sub) %in% cancer.genes] <- paste(rownames(data.mat.sub)[rownames(data.mat.sub) %in% cancer.genes], '*', sep='')
-    }
+    # if(!is.null(cancer.genes)){
+    #   rownames(data.mat.sub)[rownames(data.mat.sub) %in% cancer.genes] <- paste(rownames(data.mat.sub)[rownames(data.mat.sub) %in% cancer.genes], '*', sep='')
+    # }
 
     data.mat.sub.exp <- if(log.exp) log10(data.mat.sub + 1) else data.mat.sub
     data.mat.sub.rank <- do.call("rbind", Obtain.gene.rank(data.mat.sub))
@@ -266,7 +274,7 @@ MD.Chromosome.heatmap <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, effe
     Zone.GRanges.chr <- Zone.GRanges[seqnames(Zone.GRanges) == chr]
     Genes.GRanges.chr <- Genes.GRanges[seqnames(Genes.GRanges) == chr]
     Zone.GRanges.chr.signif <- Zone.GRanges.chr[Zone.GRanges.chr$p.value.adj <= p.value.cutoff &
-                                                Zone.GRanges.chr$effect.size >= effect.size.threshold]
+                                                  Zone.GRanges.chr$effect.size >= effect.size.threshold]
 
     Gene.pick <- names(Genes.GRanges.chr)[names(Genes.GRanges.chr) %in% Gene.npt.all.zero]
     Genes.GRanges.chr <- Genes.GRanges.chr[Gene.pick]
@@ -280,49 +288,49 @@ MD.Chromosome.heatmap <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, effe
                               Conition = factor(rep(colData[colnames(Rank.mat.chr), "Condition"], each = nrow(Rank.mat.chr)), levels = levels(colData$Condition)))
 
     p <- ggplot() +
-          geom_tile(data = chr.plot.df, aes_string(x = "Zone", y = "Sample", fill = "Exp"), color = "white") +
-          facet_grid(Conition ~ ., scales = "free_y", space = "free_y", switch="y") +
-          scale_fill_gradient2(low = "blue", mid = "gray94", high = "red", limits=c(-1, 1), breaks=seq(-1,1,by=0.5)) +
-          labs(title = paste(chr, " significant differentially expressed zones"))
+      geom_tile(data = chr.plot.df, aes_string(x = "Zone", y = "Sample", fill = "Exp"), color = "white") +
+      facet_grid(Conition ~ ., scales = "free_y", space = "free_y", switch="y") +
+      scale_fill_gradient2(low = "blue", mid = "gray94", high = "red", limits=c(-1, 1), breaks=seq(-1,1,by=0.5)) +
+      labs(title = paste(chr, " significant differentially expressed zones"))
 
     if(length(Zone.GRanges.chr.signif) > 0){
       Signif.rec.df <- data.frame(x.min = as.numeric(sapply(names(Zone.GRanges.chr.signif), function(x){which(names(Zone.GRanges.chr) == x)})) - 0.5,
                                   x.max = as.numeric(sapply(names(Zone.GRanges.chr.signif), function(x){which(names(Zone.GRanges.chr) == x)})) + 0.5,
                                   y.min = -Inf,
                                   y.max = Inf)
-        p <- p +
-          geom_rect(data = Signif.rec.df, aes_string(xmin="x.min", xmax="x.max", ymin="y.min", ymax="y.max"),
-                    color = "red", fill = NA, size = 1, linetype = 5)
+      p <- p +
+        geom_rect(data = Signif.rec.df, aes_string(xmin="x.min", xmax="x.max", ymin="y.min", ymax="y.max"),
+                  color = "red", fill = NA, size = 1, linetype = 5)
     }
 
     p <- p +
       theme(#text = element_text(size=20),
-            plot.title = element_text(size = 20, hjust = 0.5),
-            axis.title.x=element_blank(),
-            axis.text.x = element_text(size = 9, angle = 90, vjust = 0.5), #size = 10,
-            axis.text.y = element_blank(),
-            # panel.grid.major.y = element_line(colour = "darkgray", size = 0.1, linetype = "dashed"),
-            # panel.grid.minor.y = element_line(colour = "darkgray", size = 0.1, linetype = "dashed"),
-            # panel.grid.major.x = element_blank(),
-            # panel.grid.minor.x = element_blank(),
-            # axis.text.x=element_blank(),
-            axis.ticks.y = element_blank(),
-            legend.title = element_blank(),
-            #legend.position = "top",
-            legend.position = "right", #c(0,1),
-            # legend.justification = c(0, 0),
-            # legend.direction = "horizontal",
-            # legend.margin = margin(0,0,0,0),
-            # legend.box.margin = margin(0,0,0,0),
-            # panel.background = element_rect(fill = "white", colour = "black")
-            strip.text.y = element_text(angle = 180)
+        plot.title = element_text(size = 20, hjust = 0.5),
+        axis.title.x=element_blank(),
+        axis.text.x = element_text(size = 9, angle = 90, vjust = 0.5), #size = 10,
+        axis.text.y = element_blank(),
+        # panel.grid.major.y = element_line(colour = "darkgray", size = 0.1, linetype = "dashed"),
+        # panel.grid.minor.y = element_line(colour = "darkgray", size = 0.1, linetype = "dashed"),
+        # panel.grid.major.x = element_blank(),
+        # panel.grid.minor.x = element_blank(),
+        # axis.text.x=element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.title = element_blank(),
+        #legend.position = "top",
+        legend.position = "right", #c(0,1),
+        # legend.justification = c(0, 0),
+        # legend.direction = "horizontal",
+        # legend.margin = margin(0,0,0,0),
+        # legend.box.margin = margin(0,0,0,0),
+        # panel.background = element_rect(fill = "white", colour = "black")
+        strip.text.y = element_text(angle = 180)
       )
 
     plots.all[[chr]] <- p
   }
 
   pdf(plot.file, width = if(!is.null(plot.width)) plot.width else 15,
-                 height = if(!is.null(plot.width)) plot.height else 6)
+      height = if(!is.null(plot.width)) plot.height else 6)
   for(chr in names(plots.all)){
     print(plots.all[[chr]])
   }
@@ -344,8 +352,8 @@ MD.Genome.plots <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, effect.siz
   }else{
     effect.size.threshold <- sort(Zone.GRanges$effect.size, na.last = TRUE, decreasing = TRUE)[floor(length(Zone.GRanges) * effect.size.rate)]
     Zone.GRanges.sub <- Zone.GRanges[!is.na(Zone.GRanges$p.value.adj) &
-                                      Zone.GRanges$p.value.adj <= p.value.cutoff &
-                                      Zone.GRanges$effect.size >= effect.size.threshold]
+                                       Zone.GRanges$p.value.adj <= p.value.cutoff &
+                                       Zone.GRanges$effect.size >= effect.size.threshold]
   }
 
   if(length(Zone.GRanges.sub) > 0){
