@@ -1,5 +1,13 @@
 NEWS
 
-Version 0.1.1
+Version 0.99.2
+  2019-08-18
+  1.  Added joemsong as a coresponding auther to the submission.
+
+Version 0.99.1
   2019-08-17
-  1.  Pack the completed package.
+  1.  Reformatted the package for Bioconductor submission.
+
+Version 0.99.0
+  2019-08-17
+  1.  Packed the completed package.
