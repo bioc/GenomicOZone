@@ -81,7 +81,7 @@ MD.Chr.zoning.Granges <- function(GOZ.ds){
   # names(X.GRanges.new) <- chr.all
 
   if(no_cores < 1) no_cores <- 1
-  cl <- makeCluster(no_cores, type = "FORK")
+  cl <- makeCluster(no_cores) #, type = "FORK"
   #for (chr in chr.all) {
   X.GRanges.new <- parLapply(cl, chr.all, function(chr){
     X.GRanges.chr <- X.GRanges[seqnames(X.GRanges) == chr]
