@@ -1,5 +1,17 @@
 NEWS
 
+Version 0.99.3
+  1.  Replaced c(1:nrow()) into seq_len(nrow()) to avoid potential issues.
+  2.  Modified the vignettes to avoid long lines in code chunks.
+  3.  Renamed parameter 'p.value.cutoff' with 'alpha'.
+  4.  Renamed parameter 'effect.size.rate' with 'min.effect.size'.
+  5.  Updated .bib files. Added missing citations. Removed duplicated citations.
+  6.  Replace all c(1:...) with seq_len().
+  7.  Replaced the \texttt in vignettes Rmd file with a correct format using "``".
+  8.  Replaced the \textit in vignettes Rmd file with a correct format using "**".
+  9.  Adjusted the image size in vignettes Rmd file.
+  10. Updated R documents.
+
 Version 0.99.2
   2019-08-18
   1.  Added joemsong as a coresponding auther to the submission.

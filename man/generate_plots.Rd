@@ -12,15 +12,15 @@
 }
 \usage{
 plot_genome(GOZ.ds, plot.file,
-            p.value.cutoff = 0.05, effect.size.rate = 0.05,
+            alpha = 0.05, min.effect.size = 0.8,
             plot.width = NULL, plot.height = NULL)
 
 plot_chromosomes(GOZ.ds, plot.file,
-            p.value.cutoff = 0.05, effect.size.rate = 0.05,
+            alpha = 0.05, min.effect.size = 0.8,
             plot.width = NULL, plot.height = NULL)
 
 plot_zones(GOZ.ds, plot.file,
-            p.value.cutoff = 0.05, effect.size.rate = 0.05,
+            alpha = 0.05, min.effect.size = 0.8,
             log.exp = TRUE, plot.all.zones = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -33,12 +33,12 @@ plot_zones(GOZ.ds, plot.file,
     a output file name. The file type is "pdf".
   }
 
-  \item{p.value.cutoff}{
+  \item{alpha}{
     a cutoff for selecting adjuted \code{p}-values.
   }
 
-  \item{effect.size.rate}{
-    a top rate for selecting the cutoff of effect size.
+  \item{min.effect.size}{
+    the minimum effect size required for an outstanding zone. The effect size for ANOVA ranging from 0 to 1 is calculated by R package \pkg{sjstats} \insertCite{sjstats2019}{GenomicOZone}. Default to 0.8.
   }
 
   \item{plot.width}{
@@ -98,12 +98,13 @@ plot_zones(GOZ.ds, plot.file,
 
   # Generate plots
   plot_genome(GOZ.ds, plot.file = "Test_genome.pdf",
-            plot.width = 15, plot.height = 4)
+              plot.width = 15, plot.height = 4)
 
   plot_chromosomes(GOZ.ds, plot.file = "Test_chromosome.pdf",
-                 plot.width = 20, plot.height = 4)
+                   plot.width = 20, plot.height = 4)
 
-  plot_zones(GOZ.ds, plot.file = "Test_zone.pdf", plot.all.zones = FALSE)
+  plot_zones(GOZ.ds, plot.file = "Test_zone.pdf",
+             plot.all.zones = FALSE)
 }
 \references{
   \insertAllCited{}

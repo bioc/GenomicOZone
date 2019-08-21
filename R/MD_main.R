@@ -160,11 +160,12 @@ extract_zones <- function(GOZ.ds){return(GOZ.ds$runtime.var$zone.GRanges)}
 
 
 #' @export
-extract_outstanding_zones <- function(GOZ.ds, p.value.cutoff = 0.05, effect.size.rate = 0.05){
+extract_outstanding_zones <- function(GOZ.ds, alpha = 0.05, min.effect.size = 0.8){
   Zone.GRanges <- GOZ.ds$runtime.var$zone.GRanges
 
-  effect.size.threshold <- sort(Zone.GRanges$effect.size, na.last = TRUE, decreasing = TRUE)[floor(length(Zone.GRanges) * effect.size.rate)]
-  Zone.GRanges <- Zone.GRanges[Zone.GRanges$p.value.adj <= p.value.cutoff &
+  effect.size.threshold <- min.effect.size
+        #sort(Zone.GRanges$effect.size, na.last = TRUE, decreasing = TRUE)[floor(length(Zone.GRanges) * effect.size.rate)]
+  Zone.GRanges <- Zone.GRanges[Zone.GRanges$p.value.adj <= alpha &
                                Zone.GRanges$effect.size >= effect.size.threshold]
   return(Zone.GRanges)
 }
@@ -189,12 +190,12 @@ extract_zone_expression <- function(GOZ.ds){
 
 #' @export
 plot_genome <- function(GOZ.ds, plot.file,
-                        p.value.cutoff = 0.05, effect.size.rate = 0.05,
+                        alpha = 0.05, min.effect.size = 0.8,
                         plot.width = NULL, plot.height = NULL){
 
   MD.Genome.plots(GOZ.ds, plot.file = plot.file,
-                  p.value.cutoff = p.value.cutoff,
-                  effect.size.rate = effect.size.rate,
+                  alpha = alpha,
+                  min.effect.size = min.effect.size,
                   plot.width = plot.width,
                   plot.height = plot.height)
 }
@@ -202,12 +203,12 @@ plot_genome <- function(GOZ.ds, plot.file,
 
 #' @export
 plot_chromosomes <- function(GOZ.ds, plot.file,
-                            p.value.cutoff = 0.05, effect.size.rate = 0.05,
+                            alpha = 0.05, min.effect.size = 0.8,
                             plot.width = NULL, plot.height = NULL){
 
   MD.Chromosome.heatmap(GOZ.ds, plot.file = plot.file,
-                        p.value.cutoff = p.value.cutoff,
-                        effect.size.rate = effect.size.rate,
+                        alpha = alpha,
+                        min.effect.size = min.effect.size,
                         plot.width = plot.width,
                         plot.height = plot.height)
 }
@@ -215,12 +216,12 @@ plot_chromosomes <- function(GOZ.ds, plot.file,
 
 #' @export
 plot_zones <- function(GOZ.ds, plot.file,
-                      p.value.cutoff = 0.05, effect.size.rate = 0.05,
+                      alpha = 0.05, min.effect.size = 0.8,
                       log.exp = TRUE, plot.all.zones = FALSE){
 
   MD.Zone.Gene.path.plots(GOZ.ds, plot.file = plot.file,
-                          p.value.cutoff = p.value.cutoff,
-                          effect.size.rate = effect.size.rate,
+                          alpha = alpha,
+                          min.effect.size = min.effect.size,
                           log.exp = log.exp,
                           plot.all.zones = plot.all.zones)
 }

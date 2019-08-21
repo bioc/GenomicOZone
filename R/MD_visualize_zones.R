@@ -33,7 +33,7 @@ get_legend<-function(p){
 #' @importFrom grDevices dev.off pdf
 #' @importFrom gridExtra grid.arrange
 #' @importFrom utils setTxtProgressBar tail txtProgressBar
-MD.Zone.Gene.path.plots <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, effect.size.rate = 0.05, log.exp = TRUE,
+MD.Zone.Gene.path.plots <- function(GOZ.ds, plot.file, alpha = 0.05, min.effect.size = 0.8, log.exp = TRUE,
                                     plot.all.zones = FALSE){ #cancer.genes = NULL
   colData <- GOZ.ds$input.data$colData
   Zone.GRanges <- GOZ.ds$runtime.var$zone.GRanges
@@ -73,19 +73,20 @@ MD.Zone.Gene.path.plots <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, ef
     stop("Gene pattern not ploted, because less than 2 differential conditions specified in colData!")
   }
 
-  effect.size.specific.threshold <- floor(length(effect.size.specific) * effect.size.rate)
-  if(effect.size.specific.threshold < 1){
-    effect.size.specific.threshold <- 1
-  }
-  if(effect.size.specific.threshold > length(effect.size.specific)){
-    effect.size.specific.threshold <- length(effect.size.specific)
-  }
+  # effect.size.specific.threshold <- floor(length(effect.size.specific) * effect.size.rate)
+  # if(effect.size.specific.threshold < 1){
+  #   effect.size.specific.threshold <- 1
+  # }
+  # if(effect.size.specific.threshold > length(effect.size.specific)){
+  #   effect.size.specific.threshold <- length(effect.size.specific)
+  # }
 
-  effect.size.specific.threshold <- sort(effect.size.specific, na.last = TRUE, decreasing = TRUE)[effect.size.specific.threshold]
+  effect.size.specific.threshold <- min.effect.size
+      #sort(effect.size.specific, na.last = TRUE, decreasing = TRUE)[effect.size.specific.threshold]
 
   zones.all <- names(Zone.GRanges)[order(effect.size.specific, na.last = TRUE, decreasing = TRUE)]
   zone.signif <- !is.na(p.val.specific) & !is.na(effect.size.specific) &
-    p.val.specific <= p.value.cutoff &
+    p.val.specific <= alpha &
     effect.size.specific >= effect.size.specific.threshold
   zone.signif <- zone.signif[zones.all]
   zone.color <- sapply(zone.signif, function(x){
@@ -104,7 +105,7 @@ MD.Zone.Gene.path.plots <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, ef
     return(NULL)
   }
 
-  zones.all.process <- if(plot.all.zones) c(1:length(zones.all)) else c(1:length(zones.all))[zone.signif]
+  zones.all.process <- if(plot.all.zones) seq_len(length(zones.all)) else seq_len(length(zones.all))[zone.signif]
   #pb <- txtProgressBar(min = 1, max = length(zones.all.process), style = 3)
   for (pb.i in zones.all.process) {
     #setTxtProgressBar(pb, pb.i)
@@ -213,7 +214,7 @@ MD.Zone.Gene.path.plots <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, ef
     }
     pdf(plot.file.tmp, width = length(X.value.unique)/2+3, height = 4.5)
     #pb <- txtProgressBar(min = 0, max = length(plots.all), style = 3)
-    for (i in c(1:length(plots.all))) {
+    for (i in seq_len(length(plots.all))) {
       #setTxtProgressBar(pb, i)
       if(length(X.value.unique) >= 3){
         grid.arrange(grobs = plots.all[[i]],
@@ -232,7 +233,7 @@ MD.Zone.Gene.path.plots <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, ef
   if(length(plots.all.signif) > 0){
     pdf(plot.file, width = length(X.value.unique)/2+3, height = 4.5)
     #pb <- txtProgressBar(min = 0, max = length(plots.all.signif), style = 3)
-    for (i in c(1:length(plots.all.signif))) {
+    for (i in seq_len(length(plots.all.signif))) {
       #setTxtProgressBar(pb, i)
       if(length(X.value.unique) >= 3){
         grid.arrange(grobs = plots.all.signif[[i]],
@@ -256,14 +257,15 @@ MD.Zone.Gene.path.plots <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, ef
 #' @importFrom GenomeInfoDb seqlevels seqlengths
 #' @importFrom grDevices dev.off pdf
 #' @importFrom utils setTxtProgressBar txtProgressBar
-MD.Chromosome.heatmap <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, effect.size.rate = 0.05,
+MD.Chromosome.heatmap <- function(GOZ.ds, plot.file, alpha = 0.05, min.effect.size = 0.8,
                                   plot.width = NULL, plot.height = NULL){
   colData <- GOZ.ds$input.data$colData
   rownames(colData) <- colData[,1]
   Genes.GRanges <- GOZ.ds$runtime.var$data.GRanges
   Zone.GRanges <- GOZ.ds$runtime.var$zone.GRanges
   Exp <- GOZ.ds$input.data$data
-  effect.size.threshold <- sort(Zone.GRanges$effect.size, na.last = TRUE, decreasing = TRUE)[floor(length(Zone.GRanges) * effect.size.rate)]
+  effect.size.threshold <- min.effect.size
+        #sort(Zone.GRanges$effect.size, na.last = TRUE, decreasing = TRUE)[floor(length(Zone.GRanges) * effect.size.rate)]
 
   Gene.npt.all.zero <- rownames(Exp)[apply(Exp, 1, function(x){!all(x == 0)})]
 
@@ -273,7 +275,7 @@ MD.Chromosome.heatmap <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, effe
   for (chr in seqlevels(Zone.GRanges)) {
     Zone.GRanges.chr <- Zone.GRanges[seqnames(Zone.GRanges) == chr]
     Genes.GRanges.chr <- Genes.GRanges[seqnames(Genes.GRanges) == chr]
-    Zone.GRanges.chr.signif <- Zone.GRanges.chr[Zone.GRanges.chr$p.value.adj <= p.value.cutoff &
+    Zone.GRanges.chr.signif <- Zone.GRanges.chr[Zone.GRanges.chr$p.value.adj <= alpha &
                                                   Zone.GRanges.chr$effect.size >= effect.size.threshold]
 
     Gene.pick <- names(Genes.GRanges.chr)[names(Genes.GRanges.chr) %in% Gene.npt.all.zero]
@@ -342,17 +344,18 @@ MD.Chromosome.heatmap <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, effe
 #' @importFrom ggbio autoplot
 #' @importFrom grDevices dev.off pdf
 #' @importFrom utils setTxtProgressBar txtProgressBar
-MD.Genome.plots <- function(GOZ.ds, plot.file, p.value.cutoff = 0.05, effect.size.rate = 0.05, plot.width = NULL, plot.height = NULL){
+MD.Genome.plots <- function(GOZ.ds, plot.file, alpha = 0.05, min.effect.size = 0.8, plot.width = NULL, plot.height = NULL){
   Zone.GRanges <- GOZ.ds$runtime.var$zone.GRanges
   Zone.GRanges.sub <- NULL
 
   if(all(is.na(Zone.GRanges$effect.size))){
     Zone.GRanges.sub <- Zone.GRanges[!is.na(Zone.GRanges$p.value.adj) &
-                                       Zone.GRanges$p.value.adj <= p.value.cutoff]
+                                       Zone.GRanges$p.value.adj <= alpha]
   }else{
-    effect.size.threshold <- sort(Zone.GRanges$effect.size, na.last = TRUE, decreasing = TRUE)[floor(length(Zone.GRanges) * effect.size.rate)]
+    effect.size.threshold <- min.effect.size
+          #sort(Zone.GRanges$effect.size, na.last = TRUE, decreasing = TRUE)[floor(length(Zone.GRanges) * effect.size.rate)]
     Zone.GRanges.sub <- Zone.GRanges[!is.na(Zone.GRanges$p.value.adj) &
-                                       Zone.GRanges$p.value.adj <= p.value.cutoff &
+                                       Zone.GRanges$p.value.adj <= alpha &
                                        Zone.GRanges$effect.size >= effect.size.threshold]
   }
 

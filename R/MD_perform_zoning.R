@@ -22,11 +22,11 @@ MD.Reduce.dimension <- function(GOZ.ds){
     group.vars.combination <- expand.grid(lapply(group.vars, function(x){unique(colData[,x])}))
     colnames(group.vars.combination) <- group.vars
 
-    X.new <- lapply(c(1:nrow(group.vars.combination)), function(x){
+    X.new <- lapply(seq_len(nrow(group.vars.combination)), function(x){
       x <- as.character(unlist(group.vars.combination[x,]))
       pick <- rep(TRUE, nrow(colData))
 
-      for (i in c(1:length(x))) {
+      for (i in seq_len(length(x))) {
         pick <- pick & as.character(unlist(colData[,colnames(group.vars.combination)[i]])) == x[i]
       }
 
@@ -93,7 +93,7 @@ MD.Chr.zoning.Granges <- function(GOZ.ds){
 
     k.range <- NULL
     if(method == "optimal"){
-      k.range <- c(1:400)
+      k.range <- seq_len(400)
     }else if(method == "ks"){
       k.range <- as.numeric(ks[chr])
     }else{
@@ -108,12 +108,12 @@ MD.Chr.zoning.Granges <- function(GOZ.ds){
     if(!is.matrix(x)){
       x <- as.numeric(x)
       x.output <- x
-      x.output <- Ckmeans.1d.dp(x = c(1:length(x)), y = x, k = k.range)$cluster
+      x.output <- Ckmeans.1d.dp(x = seq_len(length(x)), y = x, k = k.range)$cluster
     }else{
       stop("ERROR: not yet supported!")
 
       # x.output <- x
-      # x.output <- MDW_test(x = c(1:nrow(x)),
+      # x.output <- MDW_test(x = seq_len(nrow(x)),
       #                      y = x,
       #                      Kmin = min(k.range), Kmax = max(k.range),
       #                      estimate_k = "BIC", method = "linear",
@@ -318,7 +318,7 @@ MD.rank.statistic <- function(GOZ.ds){
 
 
 Obtain.gene.rank <- function(L){
-  Gene.rank <- lapply(c(1:nrow(L)), function(x){
+  Gene.rank <- lapply(seq_len(nrow(L)), function(x){
     Gene.rank.sub <- L[x,]
     Gene.rank.sub <- rank(Gene.rank.sub, na.last = NA, ties.method = "average")
     return(Gene.rank.sub)

@@ -135,7 +135,7 @@ Search.genes.from.ensembl <- function(gene.names, Dataset = NULL, Genome = NULL,
   Match.genes.GRanges <- GRanges(seqnames = Rle(paste("chr", Match.genes$chromosome_name, sep="")),
                                  ranges = IRanges(start = Match.genes$start, end = Match.genes$end),
                                  strand = Rle(Match.genes$strand))
-  elementMetadata(Match.genes.GRanges) <- Match.genes[,c(1:2)]
+  elementMetadata(Match.genes.GRanges) <- Match.genes[,c(1,2)]
   names(Match.genes.GRanges) <- Match.genes[,gene.names.type.colname]
 
   #message("Finish matching gene names from ensembl.")

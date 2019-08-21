@@ -2,10 +2,10 @@
 \alias{GOZDataSet}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-  Create a list of all input information
+  Create an object for outstanding genomic zone analysis
 }
 \description{
-  The function collects all the inputs together and check completeness.
+  The function prepares an object for outstanding genomic zone analysis. It integrates data, annotation, and analysis pararmeters into the object and performs additional check on data integrity.
 }
 \usage{
   GOZDataSet(data, colData, design,
@@ -19,49 +19,48 @@
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{
-    a numerical \code{matrix} of input data. The row variable represents the genes. The column variable represents the samples. The data type can be gene expression, methylation beta value, copy number variation segment mean, or others. The row and column names of the matrix must be specified.
+    a numerical \code{matrix} of gene activity data. Rows represent genes. Columns represent samples. The activity data can be gene expression, methylation beta value, copy number variation segment mean, or other gene-based omic data. Row and column names of the matrix must be specified.
   }
 
   \item{colData}{
-    a \code{dataframe} of sample information. The first column must be the column of sample names, corresponding to columns in the \code{data} matrix. Each of other columns is one variable containing at least two sample conditions for differential analysis.
+    a \code{dataframe} of sample information. The first column must be sample names, corresponding to columns in the \code{data} matrix. Each additional column must contain at least two experimental conditions necessary for differential zone analysis.
   }
 
   \item{design}{
-    a one-sided \code{formula} with only right-hand side variables. Only one variable is supported in this version. The formula describes on which variable in \code{colData} the zoning process and differential analysis depend.
+    a one-sided \code{formula} with only right-hand side variables. Only one variable is supported in this version. The formula describes on which variable in \code{colData} to apply differential zone analysis.
   }
 
   \item{rowData.GRanges}{
-    an optional gene annotation in \code{GRanges} format. Rows of \code{rowData.GRanges} are corresponding to row of \code{data}. The names of \code{rowData.GRanges} must be consistent with rownames in \code{data}. Their orders are not necessarily being the same. Subset of \code{data} with only annotated genes will be used in the zoning process. One of the two parameters \code{rowData.GRanges} and \code{genome} must be specified. Using \code{rowData.GRanges} is more recommended than using \code{genome}.
+    optional genome annotation of \code{GRanges} class. Rows of \code{rowData.GRanges} correspond to rows of the \code{data} matrix. Row names of \code{rowData.GRanges} must be consistent with row names of \code{data}. Their orders are not necessarily the same. Only annotated genes in \code{data} will be used in genomic zone analysis. One of \code{rowData.GRanges} and \code{genome} must be specified.
   }
 
   \item{ks}{
-    an optional numerical vector labeled with the chromosome names. It is only used along with user-specified \code{rowData.GRanges}. The seqlevels of the \code{rowData.GRanges} must have a corresponding labeled value in \code{ks}. If not specified, the zoning process with automatically calculate an optimal k value (1~400) for each chromosome. 400 is enough for the algorithm to cluster the longest human chromosome into zones averagely wider than 1M basepair. Default is \code{NULL}.
+    an optional numerical vector to specify the number of zones to divide each chromosome into. The names of the \code{ks} vector must be chromosome names. It is only used with user-specified \code{rowData.GRanges}. The seqlevels of \code{rowData.GRanges} must have a corresponding name in \code{ks}. If not specified, an optimal k value (1~400) will be determined for each chromosome. 400 is equivalent to cluster the longest human chromosome into zones averaging wider than 1 million base pairs. Default is \code{NULL}.
   }
 
  \item{genome}{
-    an optional \code{character} type selection of the genome from \code{biomaRt}. The available genomes can be found in the "version" column of the available ensembl datasets from \code{biomaRt} database by calling \code{listDatasets(useMart("ensembl"))}.
+    an optional value of \code{character} type to select a genome from \pkg{biomaRt}. Available genomes can be found in the "version" column of the available ensembl datasets from \pkg{biomaRt} database by calling \code{listDatasets(useMart("ensembl"))}. One of \code{rowData.GRanges} and \code{genome} must be specified.
   }
 
   \item{ensembl.mirror}{
-    an optional Ensembl mirror server to connect to. It is used only when \code{genome} is specified. The options are \code{"www"}, \code{"uswest"}, \code{"useast"} and \code{"asia"}. Default is \code{"www"}.
+    an optional Ensembl mirror server to connect to. It is used only when \code{genome} is not NULL. The options are \code{"www"}, \code{"uswest"}, \code{"useast"} and \code{"asia"}. Default is \code{"www"}.
   }
 
   \item{gene.ID.type}{
-    an optional \code{character} type to specify the kind of the gene names. Options are \code{"hgnc_symbol"}, \code{"mgi_symbol"}, \code{"ensembl_gene_id"} and \code{"ensembl_transcript_id"}. Only the four kinds are allowed in this version. This parameter only works along with used-specified \code{"genome"}. If not specified, all of the four types would be evaluated to choose a correct one, which would cause computational inefficiency.
+    an optional value of \code{character} type to specify a gene ID type. Options are \code{"hgnc_symbol"}, \code{"mgi_symbol"}, \code{"ensembl_gene_id"} and \code{"ensembl_transcript_id"}. Only these four types are allowed in this version. This parameter only works with user-specified \code{genome}. If unspecified, all four types would be evaluated to choose the best one.
   }
 
   \item{ncores}{
-    an optional integer to specify the number of cores to use parallely in the zoning process. Default is 1.
+    an optional integer to specify the number of cores to use parallely in outstanding genomic zone analysis. Default is 1.
   }
 }
 \details{
-    The function is used to collect all the input information, check requirement completeness and integrate the inputs into a list for function \code{GenomicOZone} to perform all process.
-    A gene annotation file in \code{GRanges} format \insertCite{lawrence2013granges}{GenomicOZone} or a genome version must be assigned by the user, in order to annotate the genes and sort the genes by coordinates. The \code{genome} information is for function \code{GenomicOZone} to obtain annotations from the R package \code{biomaRt} \insertCite{smedley2015biomart}{GenomicOZone} to access ensembl annotation databases \insertCite{zerbino2017ensembl}{GenomicOZone}. Using \code{rowData.GRanges} is more recommended than using \code{genome}.
+    The function collects all the input information, checks requirement completeness and integrates the inputs into a list, in preparation for function \code{GenomicOZone} to perform outstanding zone analysis.
 
-    The argument \code{ks} specifies the number of zones to divide the chromosomes into. The function \code{GenomicOZone} will perform the weighted univariate clustering method Ckmeans \insertCite{wang2011ckmeans}{GenomicOZone} with the \code{ks}. If \code{ks} is \code{NULL}, optimal k values will be determined by dynamic programming.
+    A genome annotation parameter of \code{GRanges} class \insertCite{lawrence2013granges}{GenomicOZone} or a genome version must be assigned by the user. The annotation is used to sort genes by their genomic coordinates. The \code{genome} parameter is for function \code{GenomicOZone} to obtain genome annotation from the R package \pkg{biomaRt} \insertCite{smedley2015biomart}{GenomicOZone} to access Ensembl annotation databases \insertCite{zerbino2017ensembl}{GenomicOZone}. Using \code{rowData.GRanges} is recommended over using \code{genome}.
 }
 \value{
-  The function generates a list with all imputs stored inside. Further process will keep adding revealed information and final results in the list. The results can be accessed by calling the functions in \code{\link{extract_outputs}}. The figures can be visualized by calling the functions in \code{\link{generate_plots}}. See \code{\link{extract_outputs}} and \code{\link{generate_plots}} for how to access the results and generate visualizations.
+  A list object with all relevant information for oustanding genomic zone analysis. It will be expanded by further analysis.
 }
 \examples{
   data <- matrix(c(1,5,2,6,5,1,6,2), ncol = 2, byrow = TRUE)

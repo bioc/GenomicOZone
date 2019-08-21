@@ -1,11 +1,11 @@
 Package: GenomicOZone
 Type: Package
-Title: An R package to detect outstanding genomic zones of consistently differential gene activity
+Title: Delineate outstanding genomic zones of differential gene activity
 biocViews: Software, GeneExpression, Transcription, DifferentialExpression, FunctionalPrediction, GeneRegulation, BiomedicalInformatics, CellBiology, FunctionalGenomics, Genetics, SystemsBiology, Transcriptomics, Clustering, Regression, RNASeq, Annotation, Visualization, Sequencing, Coverage, DifferentialMethylation, GenomicVariation, StructuralVariation
-Version: 0.99.2
+Version: 0.99.3
 Author: Hua Zhong, Mingzhou Song
 Maintainer: Hua Zhong<zh9118@gmail.com>, Mingzhou Song <joemsong@cs.nmsu.edu>
-Description: Chromosomal reorganization, such as structural variation, aneuploidy and DNA methylation have impacts on the involved genes. However, they can’t be easily reveal by modeling gene expression only.The idea to cluster gene locations into genomic zones based on both gene proximity and abundance may focus more on similarities among gene expression patterns. The outstanding genomic zones obtained from zone-based differential expression analysis among multiple sample groups may suggest potential chromosomal reorganization causing phenotype variation. We have developed an R package GenomicOZone to cluster chromosomal activities into zones, analyze differential expressed zones, and visualize maps of outstanding genomic zones. The clustering method guarantees chromosomal global optimality, linear runtime to sample size, and reproducible results. The package enables new characterization of transcriptomic effects due to genome reorganization and other genomic alterations. 
+Description: The package clusters gene activity along chromosome into zones, detects differential zones as outstanding, and visualizes maps of outstanding zones across the genome. The method guarantees cluster optimality, linear runtime to sample size, and reproducibility. It enables new characterization of effects due to genome reorganization, structural variation, and epigenome alteration. 
 License: LGPL (>=3)
 Encoding: UTF-8
 NeedsCompilation: no
