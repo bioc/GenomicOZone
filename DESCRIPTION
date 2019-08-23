@@ -1,0 +1,18 @@
+Package: GenomicOZone
+Type: Package
+Title: Delineate outstanding genomic zones of differential gene activity
+biocViews: Software, GeneExpression, Transcription, DifferentialExpression, FunctionalPrediction, GeneRegulation, BiomedicalInformatics, CellBiology, FunctionalGenomics, Genetics, SystemsBiology, Transcriptomics, Clustering, Regression, RNASeq, Annotation, Visualization, Sequencing, Coverage, DifferentialMethylation, GenomicVariation, StructuralVariation
+Version: 0.99.6
+Author: Hua Zhong, Mingzhou Song
+Maintainer: Hua Zhong<zh9118@gmail.com>, Mingzhou Song <joemsong@cs.nmsu.edu>
+Description: The package clusters gene activity along chromosome into zones, detects differential zones as outstanding, and visualizes maps of outstanding zones across the genome. The method guarantees cluster optimality, linear runtime to sample size, and reproducibility. It enables new characterization of effects due to genome reorganization, structural variation, and epigenome alteration. 
+License: LGPL (>=3)
+Encoding: UTF-8
+NeedsCompilation: no
+Depends: R (>= 3.6), Ckmeans.1d.dp, GenomicRanges, biomaRt, ggplot2
+Suggests: readxl, GEOquery, knitr, rmarkdown
+Imports: grDevices, stats, utils, plyr, gridExtra, sjstats, parallel, ggbio, S4Vectors, IRanges, GenomeInfoDb, Rdpack
+RdMacros: Rdpack
+LazyData: true
+VignetteBuilder: knitr
+RoxygenNote: 6.1.1
