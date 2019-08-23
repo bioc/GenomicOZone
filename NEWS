@@ -1,5 +1,8 @@
 NEWS
 
+Version 0.99.5 - 0.99.8
+  1.  Solved problem connecting to GitHub and bioconductor git server.
+
 Version 0.99.4
   1.  Modified R document files.
     1.1 Corrected typos.
