@@ -5,7 +5,7 @@
   Create an object for outstanding genomic zone analysis
 }
 \description{
-  The function prepares an object for outstanding genomic zone analysis. It integrates data, annotation, and analysis pararmeters into the object and performs additional check on data integrity.
+  The function prepares an object for outstanding genomic zone analysis. It integrates data, annotation, and analysis parameters into the object and performs additional check on data integrity.
 }
 \usage{
   GOZDataSet(data, colData, design,
@@ -31,7 +31,7 @@
   }
 
   \item{rowData.GRanges}{
-    optional genome annotation of \code{GRanges} class. Rows of \code{rowData.GRanges} correspond to rows of the \code{data} matrix. Row names of \code{rowData.GRanges} must be consistent with row names of \code{data}. Their orders are not necessarily the same. Only annotated genes in \code{data} will be used in genomic zone analysis. One of \code{rowData.GRanges} and \code{genome} must be specified.
+    an optional genome annotation of \code{GRanges} class. Rows of \code{rowData.GRanges} correspond to rows of the \code{data} matrix. Row names of \code{rowData.GRanges} must be consistent with row names of \code{data}. Their orders are not necessarily the same. Only annotated genes in \code{data} will be used in genomic zone analysis. One of \code{rowData.GRanges} and \code{genome} must be specified.
   }
 
   \item{ks}{

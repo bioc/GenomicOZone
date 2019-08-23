@@ -9,7 +9,7 @@
   Extract annotation of genes, zones, outstanding zones, and expression of zones
 }
 \description{
-  Extract informtation from the output of \code{GenomicOZone} function, including a gene annotation object, a zone annotation object, an outstanding zone annotation object, or a zone activity matrix, respectively.
+  Extract informtation from the output of \code{GenomicOZone} function, including a gene annotation object, a zone annotation object, an outstanding zone annotation object, or a zone activity matrix, respectively. The activity of genes without annotation is appended at the bottom of the zone activity matrix.
 }
 \usage{
   extract_genes(GOZ.ds)

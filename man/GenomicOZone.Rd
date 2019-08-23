@@ -5,7 +5,7 @@
   Delineate outstanding genomic zones
 }
 \description{
-  Delieate outstanding genomic zones along chromosomes such that genes within an outstanding zone have consistent activity patterns that are different across samples.
+  Delineate outstanding genomic zones along chromosomes such that genes within an outstanding zone have consistent activity patterns that are different across samples.
 }
 \usage{
   GenomicOZone(GOZ.ds)

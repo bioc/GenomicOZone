@@ -8,7 +8,7 @@
   Generate plots of genome, chromosomes and zones.
 }
 \description{
-  Generate the plot from the processed GenomicOZong dataset list, including genome plots, chromosome plots and zone plots.
+  Generate the plot from the processed GenomicOZone dataset object, including genome plots, chromosome plots and zone plots.
 }
 \usage{
 plot_genome(GOZ.ds, plot.file,
@@ -26,7 +26,7 @@ plot_zones(GOZ.ds, plot.file,
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{GOZ.ds}{
-    a GenomicOZong dataset list after running \code{GenomicOZone} function.
+    a GenomicOZong dataset object after running \code{GenomicOZone} function.
   }
 
   \item{plot.file}{
@@ -50,7 +50,7 @@ plot_zones(GOZ.ds, plot.file,
   }
 
   \item{log.exp}{
-    a logical indicating whether to use log-scaled expression in the plot.
+    a logical indicating whether to use log-scaled activity in the plot.
   }
 
   \item{plot.all.zones}{
@@ -60,14 +60,14 @@ plot_zones(GOZ.ds, plot.file,
 \details{
   The three functions plot visualizations of the genome, chromosomes and zones. The R packages \code{ggplot2} \insertCite{Wickham2016ggplot2}{GenomicOZone} and \code{ggbio} \insertCite{yin2012ggbio}{GenomicOZone} are used to generate the plots.
 
-  The function \code{plot_genome} plots the genome-wide overviews with marked significant differentially expressed zones.
+  The function \code{plot_genome} plots the genome-wide overviews with marked significant differential zones.
 
-  The function \code{plot_chromosomes} plots the chromosome-wide heatmap of normalized and linearized abundance between sorted zones and samples, visualizing the zone differential expression with significant ones marked.
+  The function \code{plot_chromosomes} plots the chromosome-wide heatmap of normalized and linearized activity between sorted zones and samples, visualizing the zones with significant ones marked.
 
-  The function \code{plot_zones} plots the line chart and box-plot of the expression of the genes within each significant zone, visualizing gene expression changes over sample conditions.
+  The function \code{plot_zones} plots the line chart and box-plot of the activity of the genes within each significant zone, visualizing gene activity changes over sample conditions.
 }
 \value{
-  The function takes an input of a list, which has been created by \code{\link{GOZDataSet}} and and processed by \code{\link{GenomicOZone}}. The functions accesse the list and generate visualizations. See \code{\link{GOZDataSet}} for how to create the input list. See \code{\link{GenomicOZone}} for how to process the input list and perform the analysis.
+  The function takes an input of a object, which has been created by \code{\link{GOZDataSet}} and and processed by \code{\link{GenomicOZone}}. The functions accesse the object and generate visualizations. See \code{\link{GOZDataSet}} for how to create the input object. See \code{\link{GenomicOZone}} for how to process the input object and perform the analysis.
 }
 \examples{
   # Create an example of GOZ.ds
