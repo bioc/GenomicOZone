@@ -51,7 +51,7 @@ See \code{\link{GOZDataSet}} for how to create the input list. See \code{\link{e
   names(ks) <- "chr1"
 
   GOZ.ds <- GOZDataSet(data, colData, design,
-                       rowData.GRanges,
+                       rowData.GRanges = rowData.GRanges,
                        ks = ks)
   ####
 

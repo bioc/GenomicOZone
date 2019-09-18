@@ -12,11 +12,11 @@ MD.Reduce.dimension <- function(GOZ.ds){
   group.vars <- all.vars(GOZ.ds$input.data$design)
 
   X.new <- NULL
-  if(GOZ.ds$input.data$method == "1D"){
+  if(GOZ.ds$input.data$method == "1C"){
     X.new <- matrix(rowSums(X, na.rm = TRUE), ncol = 1)
     rownames(X.new) <- rownames(X)
     colnames(X.new) <- "Weight"
-  }else if(GOZ.ds$input.data$method == "MD"){
+  }else if(GOZ.ds$input.data$method == "MC"){
     # MD
     colData <- GOZ.ds$input.data$colData
     group.vars.combination <- expand.grid(lapply(group.vars, function(x){unique(colData[,x])}))
@@ -30,7 +30,7 @@ MD.Reduce.dimension <- function(GOZ.ds){
         pick <- pick & as.character(unlist(colData[,colnames(group.vars.combination)[i]])) == x[i]
       }
 
-      pick <- as.character(unlist(colData[1, pick]))
+      pick <- rownames(colData)[pick] #as.character(unlist(colData[1, pick]))
       if(length(pick) == 1){
         return(as.numeric(X[,pick]))
       }else{
@@ -81,53 +81,89 @@ MD.Chr.zoning.Granges <- function(GOZ.ds){
   # names(X.GRanges.new) <- chr.all
 
   if(no_cores < 1) no_cores <- 1
-  cl <- makeCluster(no_cores) #, type = "FORK"
-  #for (chr in chr.all) {
-  X.GRanges.new <- parLapply(cl, chr.all, function(chr){
-    X.GRanges.chr <- X.GRanges[seqnames(X.GRanges) == chr]
-    if(length(X.GRanges.chr) == 0) return(GRanges())
+  X.GRanges.new <- NULL
 
-    X.GRanges.chr <- sort(X.GRanges.chr, by = ~ start + end)
-    x <- GOZ.ds$runtime.var$Weight.matrix[names(X.GRanges.chr),]
-    names(x) <- names(X.GRanges.chr)
+  if(no_cores > 1){
+    cl <- makeCluster(no_cores) #, type = "FORK"
+    #for (chr in chr.all) {
+    X.GRanges.new <- parLapply(cl, chr.all, function(chr){
+      X.GRanges.chr <- X.GRanges[seqnames(X.GRanges) == chr]
+      if(length(X.GRanges.chr) == 0) return(GRanges())
 
-    k.range <- NULL
-    if(method == "optimal"){
-      k.range <- seq_len(400)
-    }else if(method == "ks"){
-      k.range <- as.numeric(ks[chr])
-    }else{
-      stop("ERROR: ks selecting bug!")
+      X.GRanges.chr <- sort(X.GRanges.chr, by = ~ start + end)
+      x <- GOZ.ds$runtime.var$Weight.matrix[names(X.GRanges.chr),]
+      names(x) <- names(X.GRanges.chr)
 
-      # region.size <- as.numeric(method)
-      # k.mean <- round(seqlengths(X.GRanges.chr)[chr] / region.size)
-      # k.range <- as.numeric(k.mean) #c((max(c(k.mean-30, 1))):(k.mean+30))
-    }
+      k.range <- NULL
+      if(method == "optimal"){
+        k.range <- seq_len(400)
+      }else if(method == "ks"){
+        k.range <- as.numeric(ks[chr])
+      }else{
+        stop("ERROR: ks selecting bug!")
 
-    x.output <- GRanges()
-    if(!is.matrix(x)){
-      x <- as.numeric(x)
-      x.output <- x
-      x.output <- Ckmeans.1d.dp(x = seq_len(length(x)), y = x, k = k.range)$cluster
-    }else{
-      stop("ERROR: not yet supported!")
+        # region.size <- as.numeric(method)
+        # k.mean <- round(seqlengths(X.GRanges.chr)[chr] / region.size)
+        # k.range <- as.numeric(k.mean) #c((max(c(k.mean-30, 1))):(k.mean+30))
+      }
 
-      # x.output <- x
-      # x.output <- MDW_test(x = seq_len(nrow(x)),
-      #                      y = x,
-      #                      Kmin = min(k.range), Kmax = max(k.range),
-      #                      estimate_k = "BIC", method = "linear",
-      #                      normalize_positive_weights = FALSE,
-      #                      scale_weights = FALSE)$cluster
-    }
+      x.output <- NULL
+      if(!is.matrix(x)){
+        x <- as.numeric(x)
+        x.output <- x
+        x.output <- Ckmeans.1d.dp(x = seq_len(length(x)), y = x, k = k.range)$cluster
+      }else{
+        #stop("ERROR: not yet supported!")
+        x.output <- MultiChannel.WUC(x = seq_len(nrow(x)), y = x, k = k.range)$cluster
+      }
 
-    X.GRanges.chr.zone <- paste(chr, "_", x.output, sep="")
+      X.GRanges.chr.zone <- paste(chr, "_", x.output, sep="")
 
-    X.GRanges.chr$zone <- factor(X.GRanges.chr.zone, levels = paste(chr, "_", sort(unique(x.output)), sep=""))
-    #X.GRanges.new[[chr]] <- X.GRanges.chr
-    return(X.GRanges.chr)
-  })
-  stopCluster(cl)
+      X.GRanges.chr$zone <- factor(X.GRanges.chr.zone, levels = paste(chr, "_", sort(unique(x.output)), sep=""))
+      #X.GRanges.new[[chr]] <- X.GRanges.chr
+      return(X.GRanges.chr)
+    })
+    stopCluster(cl)
+  }else{
+    X.GRanges.new <- lapply(chr.all, function(chr){
+      X.GRanges.chr <- X.GRanges[seqnames(X.GRanges) == chr]
+      if(length(X.GRanges.chr) == 0) return(GRanges())
+
+      X.GRanges.chr <- sort(X.GRanges.chr, by = ~ start + end)
+      x <- GOZ.ds$runtime.var$Weight.matrix[names(X.GRanges.chr),]
+      names(x) <- names(X.GRanges.chr)
+
+      k.range <- NULL
+      if(method == "optimal"){
+        k.range <- seq_len(400)
+      }else if(method == "ks"){
+        k.range <- as.numeric(ks[chr])
+      }else{
+        stop("ERROR: ks selecting bug!")
+
+        # region.size <- as.numeric(method)
+        # k.mean <- round(seqlengths(X.GRanges.chr)[chr] / region.size)
+        # k.range <- as.numeric(k.mean) #c((max(c(k.mean-30, 1))):(k.mean+30))
+      }
+
+      x.output <- NULL
+      if(!is.matrix(x)){
+        x <- as.numeric(x)
+        x.output <- x
+        x.output <- Ckmeans.1d.dp(x = seq_len(length(x)), y = x, k = k.range)$cluster
+      }else{
+        #stop("ERROR: not yet supported!")
+        x.output <- MultiChannel.WUC(x = seq_len(nrow(x)), y = x, k = k.range)$cluster
+      }
+
+      X.GRanges.chr.zone <- paste(chr, "_", x.output, sep="")
+
+      X.GRanges.chr$zone <- factor(X.GRanges.chr.zone, levels = paste(chr, "_", sort(unique(x.output)), sep=""))
+      #X.GRanges.new[[chr]] <- X.GRanges.chr
+      return(X.GRanges.chr)
+    })
+  }
+
   names(X.GRanges.new) <- chr.all
 
   X.GRanges.new <- unlist(GRangesList(X.GRanges.new), use.names = FALSE)
@@ -240,15 +276,21 @@ MD.rank.statistic <- function(GOZ.ds){
 
       if(p.value.test == "ANOVA"){
         if(length(Var.combination.names) > 1){
-          rank.mat.df <- data.frame(Type = colData[unlist(lapply(acc.rank.tmp, function(x){names(x)}), use.names = FALSE),
-                                                   GOZ.ds$runtime.var$design.treatment.var],
-                                    Gene = rep(names(acc.rank.tmp), sapply(acc.rank.tmp, function(x){length(x)})),
-                                    Value = unlist(acc.rank.tmp, use.names = FALSE))
-          res.aov.gene <- aov(Value ~ Type, data = rank.mat.df)
-          test.res <- list(statistic = summary(res.aov.gene)[[1]][["F value"]][[1]],
-                           estimate = eta_sq(res.aov.gene, partial = TRUE)$partial.etasq,
-                           p.value = summary(res.aov.gene)[[1]][["Pr(>F)"]][[1]])
+          if(length(acc.rank.tmp) <= 1){
+            test.res <- list(statistic = 0, estimate = 0, p.value = 1)
+          }else{
+            rank.mat.df <- data.frame(Type = colData[unlist(lapply(acc.rank.tmp, function(x){names(x)}), use.names = FALSE),
+                                                     GOZ.ds$runtime.var$design.treatment.var],
+                                      Gene = rep(names(acc.rank.tmp), sapply(acc.rank.tmp, function(x){length(x)})),
+                                      Value = unlist(acc.rank.tmp, use.names = FALSE))
+            res.aov.gene <- aov(Value ~ Type, data = rank.mat.df)
+            test.res <- list(statistic = summary(res.aov.gene)[[1]][["F value"]][[1]],
+                             estimate = eta_sq(res.aov.gene, partial = TRUE)$partial.etasq,
+                             p.value = summary(res.aov.gene)[[1]][["Pr(>F)"]][[1]])
+          }
         }else if(length(Var.combination.names) == 1){
+          test.res <- list(statistic = 0, estimate = 0, p.value = 1)
+
           # rank.mat.df <- data.frame(Sample = rep(colnames(X.sub), each = nrow(X.sub)),
           #                           Gene = rep(rownames(X.sub), ncol(X.sub)),
           #                           Value = log(c(X.sub) + 1))

@@ -16,6 +16,7 @@
 #' @importFrom GenomeInfoDb seqlevels seqlengths
 #' @export
 GOZDataSet <- function(data, colData, design,
+                       clustering.method = "1C",
                        rowData.GRanges = NULL,
                        ks = NULL,
                        genome = NULL,
@@ -25,7 +26,7 @@ GOZDataSet <- function(data, colData, design,
                        ){
 
   test <- "ANOVA"
-  method <- "1D"
+  method <- clustering.method #"1C"
 
   # Parameter example:
   #
@@ -54,7 +55,8 @@ GOZDataSet <- function(data, colData, design,
   #   "ANOVA" ("Chisq", "FunChisq" and "G-test" will be supported)
   #
   # method:
-  #   "1D" or "MD"
+  #   "1C": one channel of weight
+  #   "MC": Multi channels of weight
   #
   # ensembl.mirror:
   #   "uswest", "useast", "www", "asia"
@@ -98,7 +100,7 @@ GOZDataSet <- function(data, colData, design,
         stop("ERROR: ks is not a numerical vecter!")
     }
   }else{
-    if(is.null(ks))
+    if(!is.null(ks))
       stop("ERROR: ks can only be specified when rowData.GRanges is provided.
             If using ensembl annotations, this parameter is not available yet.")
   }
@@ -109,7 +111,7 @@ GOZDataSet <- function(data, colData, design,
   if(is.null(rowData.GRanges) && is.null(gene.ID.type))
     warning("\"gene.ID.type\" is not specified, exhaustively checking from the candidate types will cost more computational time!")
 
-  if(method != "1D" && method != "MD") stop("ERROR: \"method\" must be \"1D\" or \"MD\".")
+  if(method != "1C" && method != "MC") stop("ERROR: \"method\" must be \"1C\" or \"MC\".")
 
 
   if(ncores < 1) stop("ERROR: \"ncores\" must be an integer no less than 1!")

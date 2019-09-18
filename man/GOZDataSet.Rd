@@ -9,6 +9,7 @@
 }
 \usage{
   GOZDataSet(data, colData, design,
+             clustering.method = "1C",
              rowData.GRanges = NULL,
              ks = NULL,
              genome = NULL,
@@ -28,6 +29,10 @@
 
   \item{design}{
     a one-sided \code{formula} with only right-hand side variables. Only one variable is supported in this version. The formula describes on which variable in \code{colData} to apply differential zone analysis.
+  }
+
+  \item{clustering.method}{
+    a chracter string. An option to choose either using \code{"1C"} to accumulate all channels of weight into one channel, or using \code{"MC"} to allow multi channel of weight in the clustering. Default is "1D".
   }
 
   \item{rowData.GRanges}{
@@ -80,7 +85,7 @@
   names(ks) <- "chr1"
 
   GOZ.ds <- GOZDataSet(data, colData, design,
-                       rowData.GRanges,
+                       rowData.GRanges = rowData.GRanges,
                        ks = ks)
 }
 

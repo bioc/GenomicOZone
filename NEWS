@@ -1,34 +1,76 @@
-NEWS
+CHANGES IN VERSION 1.0.0
+-------------------------
 
-Version 0.99.5 - 0.99.8
-  1.  Solved problem connecting to GitHub and bioconductor git server.
+  o Added clutering method: Multi-channel weighted univariate clustering.
+  o In function MD.Chr.zoning.Granges(), if only using one core, stop calling parallel computing.
+  o Correct a bug in function MD.rank.statistic(). ANOVA requires every group has no less than 2 elements. If not, report p-value 1 directly.
+  o Fixed the mal-formated NEWS file.
 
-Version 0.99.4
-  1.  Modified R document files.
-    1.1 Corrected typos.
-    1.2 Replaceded "expression" with "activity", because not only expression can be analyzed, but also all kinds of gene activity.
-    1.3 Replaced the "GenomicOZone list" with "GenomicOZone object".
 
-Version 0.99.3
-  1.  Replaced c(1:nrow()) into seq_len(nrow()) to avoid potential issues.
-  2.  Modified the vignettes to avoid long lines in code chunks.
-  3.  Renamed parameter 'p.value.cutoff' with 'alpha'.
-  4.  Renamed parameter 'effect.size.rate' with 'min.effect.size'.
-  5.  Updated .bib files. Added missing citations. Removed duplicated citations.
-  6.  Replace all c(1:...) with seq_len().
-  7.  Replaced the \texttt in vignettes Rmd file with a correct format using "``".
-  8.  Replaced the \textit in vignettes Rmd file with a correct format using "**".
-  9.  Adjusted the image size in vignettes Rmd file.
-  10. Updated R documents.
+CHANGES IN VERSION 0.99.8
+-------------------------
 
-Version 0.99.2
-  2019-08-18
-  1.  Added joemsong as a coresponding auther to the submission.
+  o Solved problem connecting to GitHub and bioconductor git server.
 
-Version 0.99.1
-  2019-08-17
-  1.  Reformatted the package for Bioconductor submission.
 
-Version 0.99.0
-  2019-08-17
-  1.  Packed the completed package.
+CHANGES IN VERSION 0.99.7
+-------------------------
+
+  o Solved problem connecting to GitHub and bioconductor git server.
+
+
+CHANGES IN VERSION 0.99.6
+-------------------------
+
+  o Solved problem connecting to GitHub and bioconductor git server.
+
+
+CHANGES IN VERSION 0.99.5
+-------------------------
+
+  o Solved problem connecting to GitHub and bioconductor git server.
+
+
+CHANGES IN VERSION 0.99.4
+-------------------------
+
+  o Modified R document files.
+    + Corrected typos.
+    + Replaceded "expression" with "activity", because not only expression can be analyzed, but also all kinds of gene activity.
+    + Replaced the "GenomicOZone list" with "GenomicOZone object".
+
+
+CHANGES IN VERSION 0.99.3
+-------------------------
+
+  o Replaced c(1:nrow()) into seq_len(nrow()) to avoid potential issues.
+  o Modified the vignettes to avoid long lines in code chunks.
+  o Renamed parameter 'p.value.cutoff' with 'alpha'.
+  o Renamed parameter 'effect.size.rate' with 'min.effect.size'.
+  o Updated .bib files. Added missing citations. Removed duplicated citations.
+  o Replace all c(1:...) with seq_len().
+  o Replaced the \texttt in vignettes Rmd file with a correct format using "``".
+  o Replaced the \textit in vignettes Rmd file with a correct format using "**".
+  o Adjusted the image size in vignettes Rmd file.
+  o Updated R documents.
+
+
+CHANGES IN VERSION 0.99.2
+-------------------------
+
+  o Submitted on 2019-08-18
+  o Added joemsong as a coresponding auther to the submission.
+
+
+CHANGES IN VERSION 0.99.1
+-------------------------
+
+  o Submitted on 2019-08-17
+  o Reformatted the package for Bioconductor submission.
+
+
+CHANGES IN VERSION 0.99.0
+-------------------------
+
+  o Submitted on 2019-08-17
+  o Packed the completed package.
