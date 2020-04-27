@@ -2,7 +2,7 @@ Package: GenomicOZone
 Type: Package
 Title: Delineate outstanding genomic zones of differential gene activity
 biocViews: Software, GeneExpression, Transcription, DifferentialExpression, FunctionalPrediction, GeneRegulation, BiomedicalInformatics, CellBiology, FunctionalGenomics, Genetics, SystemsBiology, Transcriptomics, Clustering, Regression, RNASeq, Annotation, Visualization, Sequencing, Coverage, DifferentialMethylation, GenomicVariation, StructuralVariation
-Version: 1.2.0
+Version: 1.3.0
 Author: Hua Zhong, Mingzhou Song
 Maintainer: Hua Zhong<zh9118@gmail.com>, Mingzhou Song <joemsong@cs.nmsu.edu>
 Description: The package clusters gene activity along chromosome into zones, detects differential zones as outstanding, and visualizes maps of outstanding zones across the genome. The method guarantees cluster optimality, linear runtime to sample size, and reproducibility. It enables new characterization of effects due to genome reorganization, structural variation, and epigenome alteration. 
