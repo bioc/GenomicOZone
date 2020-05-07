@@ -2,7 +2,7 @@ Package: GenomicOZone
 Type: Package
 Title: Delineate outstanding genomic zones of differential gene activity
 biocViews: Software, GeneExpression, Transcription, DifferentialExpression, FunctionalPrediction, GeneRegulation, BiomedicalInformatics, CellBiology, FunctionalGenomics, Genetics, SystemsBiology, Transcriptomics, Clustering, Regression, RNASeq, Annotation, Visualization, Sequencing, Coverage, DifferentialMethylation, GenomicVariation, StructuralVariation
-Version: 1.4.0
+Version: 1.3.1
 Date: 2020-05-06
 Author: Hua Zhong, Mingzhou Song
 Maintainer: Hua Zhong<zh9118@gmail.com>, Mingzhou Song <joemsong@cs.nmsu.edu>
