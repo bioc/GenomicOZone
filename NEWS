@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.4.0
+-------------------------
+
+  o Fixed a bug of always using Enssembl US server to annotate the genes.
+  o Updated the description in the DESCRIPTION file.
+  o Updated the citations.
+
+
 CHANGES IN VERSION 0.99.9
 -------------------------
 

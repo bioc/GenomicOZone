@@ -32,7 +32,7 @@
   }
 
   \item{clustering.method}{
-    a chracter string. An option to choose either using \code{"1C"} to accumulate all channels of weight into one channel, or using \code{"MC"} to allow multi channel of weight in the clustering. Default is "1D".
+    a character string. An option to choose either using \code{"1C"} to accumulate all channels of weight into one channel, or using \code{"MC"} to allow multi channel of weight in the clustering. Default is "1D".
   }
 
   \item{rowData.GRanges}{

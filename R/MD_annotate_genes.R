@@ -8,7 +8,7 @@
 
 #' @import biomaRt
 find.ensembl.dataset <- function(Dataset = NULL, Genome = NULL, mirror = "www"){
-  Genomes.available <- listDatasets(useEnsembl("ensembl", mirror = "uswest"))
+  Genomes.available <- listDatasets(useEnsembl("ensembl", mirror = mirror))
 
   if(is.null(Genome) && is.null(Dataset)){
     stop("ERROR: at least one parameter is specified!")
