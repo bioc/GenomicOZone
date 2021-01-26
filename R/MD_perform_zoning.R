@@ -4,6 +4,9 @@
 # Created:
 #   Hua Zhong
 #   Dec 25, 2018
+# Last updated:
+#   Hua Zhong
+#   Jan 26, 2021
 
 
 MD.Reduce.dimension <- function(GOZ.ds){
@@ -222,7 +225,7 @@ MD.Create.zone.GRanges <- function(GOZ.ds){
 
 
 #' @importFrom stats aov p.adjust
-#' @importFrom sjstats eta_sq
+#' @importFrom lsr etaSquared
 MD.rank.statistic <- function(GOZ.ds){
   Zone.GRanges <- GOZ.ds$runtime.var$zone.GRanges
   X.GRanges <- GOZ.ds$runtime.var$data.GRanges
@@ -285,7 +288,7 @@ MD.rank.statistic <- function(GOZ.ds){
                                       Value = unlist(acc.rank.tmp, use.names = FALSE))
             res.aov.gene <- aov(Value ~ Type, data = rank.mat.df)
             test.res <- list(statistic = summary(res.aov.gene)[[1]][["F value"]][[1]],
-                             estimate = eta_sq(res.aov.gene, partial = TRUE)$partial.etasq,
+                             estimate = etaSquared(res.aov.gene)[1,"eta.sq.part"], # eta_squared(res.aov.gene, partial = TRUE)$Eta2,
                              p.value = summary(res.aov.gene)[[1]][["Pr(>F)"]][[1]])
           }
         }else if(length(Var.combination.names) == 1){
