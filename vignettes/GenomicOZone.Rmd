@@ -1,7 +1,7 @@
 ---
 title: "Example: finding E. coli outstanding genomic zones in response to nickel stress"
 author: "Hua Zhong and Joe Song"
-date: "Updated August 9, 2019; Created August 9, 2019"
+date: "Updated January 26, 2021; Created August 9, 2019"
 output: rmarkdown::html_vignette
 bibliography: vignettes.bib
 vignette: >
@@ -22,16 +22,17 @@ We illustrate the GenomicOZone package with an example. The *Escherichia coli* t
 To run this example, two other packages `GEOquery` [@davis2007geoquery] for data download and `readxl` for Excel file reading are required and should have been installed, in addition to `GenomicOZone`.
 ```{r setup, message=F, warning=F, results = "hide"}
 require(GenomicOZone)
-require(GEOquery)
+# require(GEOquery)
 require(readxl)
 ```
 
-The following code chunk downloads a data transcriptome set, prepares genome annotation, and creates parameters before outstanding zone analysis. Specifically, an *Escherichia coli* transcriptome data set of series number GSE76167 is downloaded from GEO database [@edgar2002gene]. We extracted the RPKM values from six samples including three stressed samples and three wild-type samples. The genome annotation is prepared as a `GRanges` [@lawrence2013software] object.
+The following code chunk reads a data transcriptome set, prepares genome annotation, and creates parameters before outstanding zone analysis. Specifically, an *Escherichia coli* transcriptome data set of series number GSE76167 was downloaded from GEO database [@edgar2002gene] and saved in the package. We accessed the data and extracted the RPKM values from six samples including three stressed samples and three wild-type samples. The genome annotation is prepared as a `GRanges` [@lawrence2013software] object.
 ```{r, message=F, warning=F, results = "hide"}
 # Obtain data matrix from GSE76167 supplementary file
-invisible(getGEOSuppFiles("GSE76167"))
-data <- read_excel("./GSE76167/GSE76167_GeneFPKM_AllSamples.xlsx")
-
+# invisible(getGEOSuppFiles("GSE76167"))
+# data <- read_excel(".//GSE76167_GeneFPKM_AllSamples.xlsx")
+file <- system.file("extdata", "GSE76167_GeneFPKM_AllSamples.xlsx", package = "GenomicOZone", mustWork = TRUE)
+data <- read_excel(file)
 
 # Adjust the input data
 data.info <- data[,1:5]
