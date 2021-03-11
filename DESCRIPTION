@@ -1,19 +1,22 @@
 Package: GenomicOZone
 Type: Package
 Title: Delineate outstanding genomic zones of differential gene activity
-biocViews: Software, GeneExpression, Transcription, DifferentialExpression, FunctionalPrediction, GeneRegulation, BiomedicalInformatics, CellBiology, FunctionalGenomics, Genetics, SystemsBiology, Transcriptomics, Clustering, Regression, RNASeq, Annotation, Visualization, Sequencing, Coverage, DifferentialMethylation, GenomicVariation, StructuralVariation
-Version: 1.4.0
-Date: 2020-05-06
-Author: Hua Zhong, Mingzhou Song
-Maintainer: Hua Zhong<zh9118@gmail.com>, Mingzhou Song <joemsong@cs.nmsu.edu>
+biocViews: Software, GeneExpression, Transcription, DifferentialExpression, FunctionalPrediction, GeneRegulation, BiomedicalInformatics, CellBiology, FunctionalGenomics, Genetics, SystemsBiology, Transcriptomics, Clustering, Regression, RNASeq, Annotation, Visualization, Sequencing, Coverage, DifferentialMethylation, GenomicVariation, StructuralVariation, CopyNumberVariation
+Version: 1.4.1
+Date: 2021-02-21
+Author: Hua Zhong [aut], Mingzhou Song [aut, cre]
+Authors@R: c(
+  person(given = "Hua", family = "Zhong", role = c("aut"), email = "zh9118@gmail.com"),
+  person(given = "Mingzhou", family = "Song", role = c("aut", "cre"), email = "joemsong@cs.nmsu.edu")
+ )
 Description: The package clusters gene activity along chromosome into zones, detects differential zones as outstanding, and visualizes maps of outstanding zones across the genome. It enables characterization of effects on multiple genes within adaptive genomic neighborhoods, which could arise from genome reorganization, structural variation, or epigenome alteration. It guarantees cluster optimality, linear runtime to sample size, and reproducibility. One can apply it on genome-wide activity measurements such as copy number, transcriptomic, proteomic, and methylation data.
 License: LGPL (>=3)
 Encoding: UTF-8
 NeedsCompilation: no
 Depends: R (>= 4.0.0), Ckmeans.1d.dp (>= 4.3.0), GenomicRanges, biomaRt, ggplot2
-Suggests: readxl, GEOquery, knitr, rmarkdown
-Imports: grDevices, stats, utils, plyr, gridExtra, sjstats, parallel, ggbio, S4Vectors, IRanges, GenomeInfoDb, Rdpack
+Suggests: readxl, knitr, rmarkdown
+Imports: grDevices, stats, utils, plyr, gridExtra, lsr, parallel, ggbio, S4Vectors, IRanges, GenomeInfoDb, Rdpack
 RdMacros: Rdpack
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
