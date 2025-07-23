@@ -13,7 +13,7 @@
 
 
 #' @importFrom plyr is.formula
-#' @importFrom GenomeInfoDb seqlevels seqlengths
+#' @importFrom Seqinfo seqlevels seqlengths
 #' @export
 GOZDataSet <- function(data, colData, design,
                        clustering.method = "1C",

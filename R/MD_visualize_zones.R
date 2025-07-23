@@ -257,7 +257,7 @@ MD.Zone.Gene.path.plots <- function(GOZ.ds, plot.file, alpha = 0.05, min.effect.
 
 
 #' @import ggplot2
-#' @importFrom GenomeInfoDb seqlevels seqlengths
+#' @importFrom Seqinfo seqlevels seqlengths
 #' @importFrom grDevices dev.off pdf
 #' @importFrom utils setTxtProgressBar txtProgressBar
 MD.Chromosome.heatmap <- function(GOZ.ds, plot.file, alpha = 0.05, min.effect.size = 0.8,

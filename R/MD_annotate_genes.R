@@ -145,7 +145,7 @@ Search.genes.from.ensembl <- function(gene.names, Dataset = NULL, Genome = NULL,
 }
 
 
-#' @importFrom GenomeInfoDb seqlevels seqlengths seqlevels<- seqlengths<-
+#' @importFrom Seqinfo seqlevels seqlengths seqlevels<- seqlengths<-
 Add.chr.info <- function(X.GRanges, Genome){
   chr.size <- NULL
 
@@ -225,7 +225,7 @@ Add.chr.info <- function(X.GRanges, Genome){
 }
 
 
-#' @importFrom GenomeInfoDb seqlevels seqlengths
+#' @importFrom Seqinfo seqlevels seqlengths
 MD.Annotate.data <- function(GOZ.ds, ID.type = NULL){
   mirror <- GOZ.ds$input.data$mirror
   data.GRanges <- NULL

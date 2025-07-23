@@ -72,7 +72,7 @@ MD.Prepare.weight.matrix <- function(GOZ.ds, log.value = FALSE){
 
 #' @import Ckmeans.1d.dp
 #' @importFrom parallel detectCores makeCluster stopCluster parLapply
-#' @importFrom GenomeInfoDb seqlevels seqlengths
+#' @importFrom Seqinfo seqlevels seqlengths
 MD.Chr.zoning.Granges <- function(GOZ.ds){
   method <- GOZ.ds$input.data$ks.method
   ks <- GOZ.ds$input.data$ks
@@ -174,7 +174,7 @@ MD.Chr.zoning.Granges <- function(GOZ.ds){
 }
 
 
-#' @importFrom GenomeInfoDb seqlevels seqlengths seqlevels<- seqlengths<-
+#' @importFrom Seqinfo seqlevels seqlengths seqlevels<- seqlengths<-
 #' @importFrom S4Vectors Rle
 MD.Create.zone.GRanges <- function(GOZ.ds){
   X.GRanges <- GOZ.ds$runtime.var$data.GRanges
